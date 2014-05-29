@@ -27,52 +27,46 @@ var TestChart = React.createClass({
   setStateFromServerData: function(data) {
     // Results, keyed on host.
     var resultsByHost = {};
+    var hostBrowsers = {};
+    var clientBrowsers = {};
     data.map(function(result) {
-      var name = browserName(result.host.browser);
-      resultsByHost[name] = resultsByHost[name] || [];
-      resultsByHost[name].push(result);
+      var hostName = browserName(result.host.browser);
+      hostBrowsers[hostName] = 1;
+      result.host = hostName;
+
+      var clientName = browserName(result.client.browser);
+      clientBrowsers[clientName] = 1;
+      result.client = clientName;
+
+      resultsByHost[hostName] = resultsByHost[hostName] || {};
+      resultsByHost[hostName][clientName] = result;
     });
-    // Results, keyed on client.
-    var resultsByClient = {};
-    data.map(function(result) {
-      var name = browserName(result.client.browser);
-      resultsByClient[name] = resultsByClient[name] || [];
-      resultsByClient[name].push(result);
-    });
 
-    var hostBrowsers = Object.keys(resultsByHost);
-    var clientBrowsers = Object.keys(resultsByClient);
-    var clientBrowserOrder = {};
-
-    for (var i = 0, numBrowsers = clientBrowsers.length; i < numBrowsers; i += 1) {
-      clientBrowserOrder[clientBrowsers[i]] = i;
-    }
-
-    function clientBrowserSort(a, b) {
-      return clientBrowserOrder[browserName(a.client.browser)] < clientBrowserOrder[browserName(b.client.browser)]
-    }
+    hostBrowsers = Object.keys(hostBrowsers);
+    clientBrowsers = Object.keys(clientBrowsers);
 
     // First level: host, second nested level: client.
     var results = [];
-    // Order matters here, so let's be explicit.
-    for (var i = 0, numBrowsers = hostBrowsers.length; i < numBrowsers; i += 1) {
-      var browser = hostBrowsers[i];
-      results[i] = resultsByHost[browser].sort(clientBrowserSort);
-    }
+    hostBrowsers.map(function(hostBrowser, i) {
+      results[i] = [];
+      clientBrowsers.map(function(clientBrowser, j) {
+        results[i][j] = resultsByHost[hostBrowser][clientBrowser] || {host: hostBrowser, client: clientBrowser};
+      });
+    });
     this.setState({results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
   },
 
   selectClient: function(i) {
-    this.setState({selectedClient: this.state.clientBrowsers[i]});
+    this.setState({selectedClient: this.state.clientBrowsers[i], selectedHost: null});
   },
   selectHost: function(i) {
-    this.setState({selectedHost: this.state.hostBrowsers[i]});
+    this.setState({selectedHost: this.state.hostBrowsers[i], selectedClient: null});
   },
   selectHostAndClientFromResult: function(i, j) {
     var selectedResult = this.state.results[i][j];
     this.setState({
-      selectedClient: browserName(selectedResult.client.browser),
-      selectedHost: browserName(selectedResult.host.browser)
+      selectedClient: selectedResult.client,
+      selectedHost: selectedResult.host
     });
   },
 
@@ -82,59 +76,62 @@ var TestChart = React.createClass({
 
   render: function() {
     var results = this.state.results.map(function(hostResults, i) {
-      var host = browserName(hostResults[0].host.browser);
+      var host = hostResults[0].host;
       hostResults = hostResults.map(function(result, j) {
-        if (host !== browserName(result.host.browser)) {
+        if (host !== result.host) {
           console.error('Hosts don\'t match in the same column!!');
         }
-        var client = browserName(result.client.browser);
-        var classes = (this.isSelected(host, client) ? 'selected ' : '') +
-          'result ' + browserClassName(client);
+        var classes = (this.isSelected(host, result.client) ? 'selected ' : '') +
+          'result ' + browserClassName(result.client) + (result.result ? '' : ' empty');
+        // TODO: create better results! Or more deets on hover.
+        var pass = '';
+        if (result.result) {
+          pass = result.result.data ? 'Yes' : 'No';
+        }
         return (
-          <div className={classes} onMouseEnter={this.selectHostAndClientFromResult.bind(this, i, j)}>
-            Pass!
-          </div>
+          <th className={classes} onMouseEnter={this.selectHostAndClientFromResult.bind(this, i, j)}>
+            {pass}
+          </th>
         );
       }, this);
 
-      var classes = 'results ' + browserClassName(host);
+      var hostClasses = 'browser ' + browserClassName(host) +
+        (this.state.selectedHost === host ? ' selected' : '');
+      hostResults.unshift(
+        <th className={hostClasses} onMouseEnter={this.selectHost.bind(this, i)}>
+          {host}
+        </th>
+      );
+
+      var resultsClasses = 'results ' + browserClassName(host);
       return (
-        <div className={classes}>
+        <tr className={resultsClasses}>
           {hostResults}
-        </div>
+        </tr>
       );
     }, this);
 
-    var hostBrowsers = this.state.hostBrowsers.map(function(browser, i) {
-      var classes = 'browser ' + browserClassName(browser) +
-        (this.state.selectedHost === browser ? ' selected' : '');
-      return (
-        <div className={classes} onMouseEnter={this.selectHost.bind(this, i)}>
-          {browser}
-        </div>
-      );
-    }, this);
     var clientBrowsers = this.state.clientBrowsers.map(function(browser, i) {
       var classes = 'browser ' + browserClassName(browser) +
         (this.state.selectedClient === browser ? ' selected' : '');
       return (
-        <div className={classes} onMouseEnter={this.selectClient.bind(this, i)}>
+        <th className={classes} onMouseEnter={this.selectClient.bind(this, i)}>
           {browser}
-        </div>
+        </th>
       );
     }, this);
 
     return (
-      <div className="chart">
+      <table>
         Test results will go here!
-        <div className="client browsers">
+
+        <tr className="client browsers">
+          <th></th>
           {clientBrowsers}
-        </div>
-        <div className="host browsers">
-          {hostBrowsers}
-        </div>
+        </tr>
+
         {results}
-      </div>
+      </table>
     );
   }
 });

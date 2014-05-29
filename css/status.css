@@ -1,0 +1,20 @@
+
+.browser {
+  width: 80px;
+}
+
+.empty {
+  background-color: #ccc;
+}
+
+.browsers {
+  background-color: yellow;
+}
+
+.selected {
+  background-color: red;
+}
+
+.result:hover {
+  background-color: blue;
+}
