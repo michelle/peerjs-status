@@ -42,8 +42,8 @@ var TestChart = React.createClass({
       resultsByHost[hostName][clientName] = result;
     });
 
-    hostBrowsers = Object.keys(hostBrowsers);
-    clientBrowsers = Object.keys(clientBrowsers);
+    hostBrowsers = Object.keys(hostBrowsers).sort();
+    clientBrowsers = Object.keys(clientBrowsers).sort();
 
     // First level: host, second nested level: client.
     var results = [];
@@ -81,17 +81,11 @@ var TestChart = React.createClass({
         if (host !== result.host) {
           console.error('Hosts don\'t match in the same column!!');
         }
-        var classes = (this.isSelected(host, result.client) ? 'selected ' : '') +
-          'result ' + browserClassName(result.client) + (result.result ? '' : ' empty');
-        // TODO: create better results! Or more deets on hover.
-        var pass = '';
-        if (result.result) {
-          pass = result.result.data ? 'Yes' : 'No';
-        }
         return (
-          <th className={classes} onMouseEnter={this.selectHostAndClientFromResult.bind(this, i, j)}>
-            {pass}
-          </th>
+          <ResultCell
+            data={result}
+            selected={this.isSelected(host, result.client)}
+            onMouseEnter={this.selectHostAndClientFromResult.bind(this, i, j)} />
         );
       }, this);
 
@@ -123,18 +117,35 @@ var TestChart = React.createClass({
 
     return (
       <table>
-        Test results will go here!
-
         <tr className="client browsers">
           <th></th>
           {clientBrowsers}
         </tr>
-
         {results}
       </table>
     );
   }
 });
+
+
+var ResultCell = React.createClass({
+  render: function() {
+    var result = this.props.data
+    var classes = (this.props.selected ? 'selected ' : '') +
+      'result ' + browserClassName(result.client) + (result.result ? '' : ' empty');
+    // TODO: create better results! Or more deets on hover.
+    var pass = '';
+    if (result.result) {
+      pass = result.result.data ? 'Yes' : 'No';
+    }
+    return (
+      <td className={classes} onMouseEnter={this.props.onMouseEnter}>
+        {pass}
+      </td>
+    )
+  }
+});
+
 
 React.renderComponent(
   // TODO: <TestChart url='/ajax/status' />,
@@ -146,10 +157,6 @@ React.renderComponent(
 // Helpers
 function browserName(browserHash) {
   return browserHash.name + ' (' + browserHash.majorVersion + ')';
-}
-
-function browserClassNameFromHash(browserHash) {
-  return browserHash.name.toLowerCase() + '' + browserHash.majorVersion;
 }
 
 function browserClassName(browserString) {

@@ -42,8 +42,8 @@ var TestChart = React.createClass({displayName: 'TestChart',
       resultsByHost[hostName][clientName] = result;
     });
 
-    hostBrowsers = Object.keys(hostBrowsers);
-    clientBrowsers = Object.keys(clientBrowsers);
+    hostBrowsers = Object.keys(hostBrowsers).sort();
+    clientBrowsers = Object.keys(clientBrowsers).sort();
 
     // First level: host, second nested level: client.
     var results = [];
@@ -81,17 +81,11 @@ var TestChart = React.createClass({displayName: 'TestChart',
         if (host !== result.host) {
           console.error('Hosts don\'t match in the same column!!');
         }
-        var classes = (this.isSelected(host, result.client) ? 'selected ' : '') +
-          'result ' + browserClassName(result.client) + (result.result ? '' : ' empty');
-        // TODO: create better results! Or more deets on hover.
-        var pass = '';
-        if (result.result) {
-          pass = result.result.data ? 'Yes' : 'No';
-        }
         return (
-          React.DOM.th( {className:classes, onMouseEnter:this.selectHostAndClientFromResult.bind(this, i, j)}, 
-            pass
-          )
+          ResultCell(
+            {data:result,
+            selected:this.isSelected(host, result.client),
+            onMouseEnter:this.selectHostAndClientFromResult.bind(this, i, j)} )
         );
       }, this);
 
@@ -123,18 +117,35 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
     return (
       React.DOM.table(null, 
-        "Test results will go here!",
-
         React.DOM.tr( {className:"client browsers"}, 
           React.DOM.th(null),
           clientBrowsers
         ),
-
         results
       )
     );
   }
 });
+
+
+var ResultCell = React.createClass({displayName: 'ResultCell',
+  render: function() {
+    var result = this.props.data
+    var classes = (this.props.selected ? 'selected ' : '') +
+      'result ' + browserClassName(result.client) + (result.result ? '' : ' empty');
+    // TODO: create better results! Or more deets on hover.
+    var pass = '';
+    if (result.result) {
+      pass = result.result.data ? 'Yes' : 'No';
+    }
+    return (
+      React.DOM.td( {className:classes, onMouseEnter:this.props.onMouseEnter}, 
+        pass
+      )
+    )
+  }
+});
+
 
 React.renderComponent(
   // TODO: <TestChart url='/ajax/status' />,
@@ -146,10 +157,6 @@ React.renderComponent(
 // Helpers
 function browserName(browserHash) {
   return browserHash.name + ' (' + browserHash.majorVersion + ')';
-}
-
-function browserClassNameFromHash(browserHash) {
-  return browserHash.name.toLowerCase() + '' + browserHash.majorVersion;
 }
 
 function browserClassName(browserString) {
