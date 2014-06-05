@@ -32,11 +32,11 @@ var TestChart = React.createClass({displayName: 'TestChart',
     data.map(function(result) {
       var hostName = browserName(result.host.browser);
       hostBrowsers[hostName] = 1;
-      result.host = hostName;
+      result.hostBrowser = hostName;
 
       var clientName = browserName(result.client.browser);
       clientBrowsers[clientName] = 1;
-      result.client = clientName;
+      result.clientBrowser = clientName;
 
       resultsByHost[hostName] = resultsByHost[hostName] || {};
       resultsByHost[hostName][clientName] = result;
@@ -50,7 +50,7 @@ var TestChart = React.createClass({displayName: 'TestChart',
     hostBrowsers.map(function(hostBrowser, i) {
       results[i] = [];
       clientBrowsers.map(function(clientBrowser, j) {
-        results[i][j] = resultsByHost[hostBrowser][clientBrowser] || {host: hostBrowser, client: clientBrowser};
+        results[i][j] = resultsByHost[hostBrowser][clientBrowser] || {hostBrowser: hostBrowser, clientBrowser: clientBrowser};
       });
     });
     this.setState({results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
@@ -65,8 +65,8 @@ var TestChart = React.createClass({displayName: 'TestChart',
   selectHostAndClientFromResult: function(i, j) {
     var selectedResult = this.state.results[i][j];
     this.setState({
-      selectedClient: selectedResult.client,
-      selectedHost: selectedResult.host
+      selectedClient: selectedResult.clientBrowser,
+      selectedHost: selectedResult.hostBrowser
     });
   },
 
@@ -76,15 +76,15 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
   render: function() {
     var results = this.state.results.map(function(hostResults, i) {
-      var host = hostResults[0].host;
+      var host = hostResults[0].hostBrowser;
       hostResults = hostResults.map(function(result, j) {
-        if (host !== result.host) {
-          console.error('Hosts don\'t match in the same column!!');
+        if (host !== result.hostBrowser) {
+          console.error('Hosts don\'t match in the same column!!', host, result.hostBrowser);
         }
         return (
           ResultCell(
             {data:result,
-            selected:this.isSelected(host, result.client),
+            selected:this.isSelected(host, result.clientBrowser),
             onMouseEnter:this.selectHostAndClientFromResult.bind(this, i, j)} )
         );
       }, this);
@@ -92,8 +92,10 @@ var TestChart = React.createClass({displayName: 'TestChart',
       var hostClasses = 'browser ' + browserClassName(host) +
         (this.state.selectedHost === host ? ' selected' : '');
       hostResults.unshift(
-        React.DOM.th( {className:hostClasses, onMouseEnter:this.selectHost.bind(this, i)}, 
-          host
+        Browser(
+          {browser:host,
+          selected:this.state.selectedHost === host,
+          onMouseEnter:this.selectHost.bind(this, i)}
         )
       );
 
@@ -106,11 +108,11 @@ var TestChart = React.createClass({displayName: 'TestChart',
     }, this);
 
     var clientBrowsers = this.state.clientBrowsers.map(function(browser, i) {
-      var classes = 'browser ' + browserClassName(browser) +
-        (this.state.selectedClient === browser ? ' selected' : '');
       return (
-        React.DOM.th( {className:classes, onMouseEnter:this.selectClient.bind(this, i)}, 
-          browser
+        Browser(
+          {browser:browser,
+          selected:this.state.selectedClient === browser,
+          onMouseEnter:this.selectClient.bind(this, i)}
         )
       );
     }, this);
@@ -130,19 +132,36 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
 var ResultCell = React.createClass({displayName: 'ResultCell',
   render: function() {
-    var result = this.props.data
+    var result = this.props.data;
     var classes = (this.props.selected ? 'selected ' : '') +
-      'result ' + browserClassName(result.client) + (result.result ? '' : ' empty');
+      'result ' + browserClassName(result.clientBrowser) + (result.result ? '' : ' empty');
     // TODO: create better results! Or more deets on hover.
     var pass = '';
     if (result.result) {
-      pass = result.result.data ? 'Yes' : 'No';
+      if (result.result.data) {
+        pass = 'Yes';
+        classes += ' green';
+      } else {
+        pass = 'No';
+        classes += ' red';
+      }
     }
     return (
-      React.DOM.td( {className:classes, onMouseEnter:this.props.onMouseEnter}, 
-        pass
+      React.DOM.td( {className:classes, onMouseEnter:this.props.onMouseEnter} )
+    );
+  }
+});
+
+var Browser = React.createClass({displayName: 'Browser',
+  render: function() {
+    var browser = this.props.browser;
+    var classes = 'browser ' + browserClassName(browser) +
+      (this.props.selected ? ' selected' : '');
+    return (
+      React.DOM.th( {className:classes, onMouseEnter:this.props.onMouseEnter}, 
+        browser.replace(/[\D]/g, '')
       )
-    )
+    );
   }
 });
 
@@ -160,5 +179,5 @@ function browserName(browserHash) {
 }
 
 function browserClassName(browserString) {
-  return browserString.replace(/[\s\(\)]/g, '').toLowerCase();
+  return browserString.replace(/[\s\(\)\d]/g, '').toLowerCase();
 }

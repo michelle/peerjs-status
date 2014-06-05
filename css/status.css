@@ -1,20 +1,51 @@
-
-.browser {
-  width: 80px;
+body {
+  
 }
 
-.empty {
+.browser {
+  width: 40px;
+  height: 40px;
+}
+
+.browser.chrome {
+}
+
+.browser.firefox {
+}
+
+table {
+  border-spacing: 3px;
+}
+
+td {
+  vertical-align: bottom;
+}
+
+td, th {
+  border-radius: 6px;
+}
+
+/** TODO: fix all the opacity changes to be actual color changes. */
+.result {
+  opacity: 0.5;
+}
+
+.result.empty {
   background-color: #ccc;
 }
 
-.browsers {
-  background-color: yellow;
-}
-
-.selected {
-  background-color: red;
-}
-
 .result:hover {
-  background-color: blue;
+  opacity: 1;
+}
+
+.result.red {
+  background-color: #ff0015;
+}
+
+.result.green {
+  background-color: #91ff00;
+}
+
+.result.selected, .browser.selected {
+  opacity: 0.7;
 }
