@@ -1,16 +1,4 @@
 body {
-  
-}
-
-.browser {
-  width: 40px;
-  height: 40px;
-}
-
-.browser.chrome {
-}
-
-.browser.firefox {
 }
 
 table {
@@ -22,7 +10,36 @@ td {
 }
 
 td, th {
+  text-shadow: -1px -1px 0px rgba(0,0,0,0.2);
   border-radius: 6px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+}
+
+.browser {
+  width: 50px;
+  height: 50px;
+  color: #f0f0f0;
+  text-align: center;
+  border-radius: 30px;
+  opacity: 0.6;
+}
+
+
+.browser.chrome {
+  border-top: 15px solid rgba(255, 80, 84, 1); /** red */
+  border-left: 10px solid rgba(0, 188, 92, 1); /** green */
+  border-right: 10px solid rgba(255, 210, 33, 1); /** yellow */
+  background-color: rgba(50, 165, 213, 1); /** light blue */
+  vertical-align: top;
+}
+
+.browser.firefox {
+  border-left: 10px solid rgba(222, 91, 38, 1); /** red */
+  border-bottom: 15px solid rgba(255, 136, 44, 1); /** orange */
+  border-right: 10px solid rgba(245, 200, 18, 1); /** yellow */
+  background-color: rgba(29, 114, 180, 1); /** blue */
+  vertical-align: bottom;
 }
 
 /** TODO: fix all the opacity changes to be actual color changes. */
@@ -31,11 +48,7 @@ td, th {
 }
 
 .result.empty {
-  background-color: #ccc;
-}
-
-.result:hover {
-  opacity: 1;
+  background-color: rgba(223, 229, 232, 1); /** light light blue */
 }
 
 .result.red {
@@ -46,6 +59,10 @@ td, th {
   background-color: #91ff00;
 }
 
-.result.selected, .browser.selected {
+.result.selected {
   opacity: 0.7;
+}
+
+.browser.selected {
+  opacity: 1;
 }
