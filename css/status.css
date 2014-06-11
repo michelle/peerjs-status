@@ -49,6 +49,7 @@ td, th {
   border-left: 10px solid rgba(0, 197, 93, 1); /** green */
   border-right: 10px solid rgba(255, 210, 33, 1); /** yellow */
   background-color: rgba(65, 162, 211, 1); /** light blue */
+  box-shadow: 2px 2px 0px rgba(223, 229, 232, 1), -2px 2px 0px rgba(223, 229, 232, 1), -2px -2px 0px rgba(223, 229, 232, 1), 2px -2px 0px rgba(223, 229, 232, 1);
   vertical-align: top;
 }
 
@@ -57,6 +58,7 @@ td, th {
   border-bottom: 15px solid rgba(255, 136, 44, 1); /** orange */
   border-right: 10px solid rgba(245, 200, 18, 1); /** yellow */
   background-color: rgba(29, 114, 180, 1); /** blue */
+  box-shadow: 2px 2px 0px rgba(223, 229, 232, 1), -2px 2px 0px rgba(223, 229, 232, 1), -2px -2px 0px rgba(223, 229, 232, 1), 2px -2px 0px rgba(223, 229, 232, 1);
   vertical-align: bottom;
 }
 
@@ -78,7 +80,7 @@ td, th {
 }
 
 .result.selected {
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .browser.selected {

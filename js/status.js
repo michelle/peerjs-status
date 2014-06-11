@@ -51,10 +51,8 @@ var TestChart = React.createClass({displayName: 'TestChart',
       }
     };
 
-    console.log(Object.keys(hostBrowsers));
     hostBrowsers = Object.keys(hostBrowsers).sort(browserSort);
     clientBrowsers = Object.keys(clientBrowsers).sort(browserSort);
-    console.log(hostBrowsers);
 
     // First level: host, second nested level: client.
     var results = [];
