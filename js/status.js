@@ -42,8 +42,19 @@ var TestChart = React.createClass({displayName: 'TestChart',
       resultsByHost[hostName][clientName] = result;
     });
 
-    hostBrowsers = Object.keys(hostBrowsers).sort();
-    clientBrowsers = Object.keys(clientBrowsers).sort();
+    function browserSort(a, b) {
+      // For same browser, sort in reverse.
+      if (a.indexOf('Chrome') === b.indexOf('Chrome')) {
+        return b > a ? 1 : -1;
+      } else {
+        return b.indexOf('Chrome') === 0 ? 1 : -1;
+      }
+    };
+
+    console.log(Object.keys(hostBrowsers));
+    hostBrowsers = Object.keys(hostBrowsers).sort(browserSort);
+    clientBrowsers = Object.keys(clientBrowsers).sort(browserSort);
+    console.log(hostBrowsers);
 
     // First level: host, second nested level: client.
     var results = [];

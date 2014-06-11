@@ -1,3 +1,5 @@
+/** mono = (0.2125 * r) + (0.7154 * g) + (0.0721 * b); */
+
 body {
 }
 
@@ -10,7 +12,7 @@ td {
 }
 
 td, th {
-  text-shadow: -1px -1px 0px rgba(0,0,0,0.2);
+  text-shadow: 0px 1px 0px rgba(0,0,0,0.3);
   border-radius: 6px;
   box-sizing: border-box;
   padding: 4px 6px;
@@ -22,19 +24,35 @@ td, th {
   color: #f0f0f0;
   text-align: center;
   border-radius: 30px;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 
 .browser.chrome {
-  border-top: 15px solid rgba(255, 80, 84, 1); /** red */
-  border-left: 10px solid rgba(0, 188, 92, 1); /** green */
-  border-right: 10px solid rgba(255, 210, 33, 1); /** yellow */
-  background-color: rgba(50, 165, 213, 1); /** light blue */
+  border-top: 15px solid rgb(117, 117, 117); /** red */
+  border-left: 10px solid rgb(148, 148, 148); /** green */
+  border-right: 10px solid rgb(207, 207, 207); /** yellow */
+  background-color: rgb(144, 144, 144); /** light blue */
   vertical-align: top;
 }
 
 .browser.firefox {
+  border-left: 10px solid rgb(115, 115, 115); /** red */
+  border-bottom: 15px solid rgb(155, 155, 155); /** orange */
+  border-right: 10px solid rgb(196, 196, 196); /** yellow */
+  background-color: rgb(101, 101, 101); /** blue */
+  vertical-align: bottom;
+}
+
+.browser.chrome.selected {
+  border-top: 15px solid rgba(255, 80, 84, 1); /** red */
+  border-left: 10px solid rgba(0, 197, 93, 1); /** green */
+  border-right: 10px solid rgba(255, 210, 33, 1); /** yellow */
+  background-color: rgba(65, 162, 211, 1); /** light blue */
+  vertical-align: top;
+}
+
+.browser.firefox.selected {
   border-left: 10px solid rgba(222, 91, 38, 1); /** red */
   border-bottom: 15px solid rgba(255, 136, 44, 1); /** orange */
   border-right: 10px solid rgba(245, 200, 18, 1); /** yellow */
