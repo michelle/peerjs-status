@@ -152,13 +152,15 @@ var TestChart = React.createClass({displayName: 'TestChart',
     }, this);
 
     return (
-      React.DOM.div( {className:"chart"}, 
-        React.DOM.table(null, 
-          React.DOM.tr( {className:"client browsers"}, 
-            React.DOM.th(null),
-            clientBrowsers
-          ),
-          results
+      React.DOM.div( {className:"tests"}, 
+        React.DOM.div( {className:"chart"}, 
+          React.DOM.table(null, 
+            React.DOM.tr( {className:"client browsers"}, 
+              React.DOM.th(null),
+              clientBrowsers
+            ),
+            results
+          )
         ),
         TestDetails( {data:this.state.selectedResult} )
       )

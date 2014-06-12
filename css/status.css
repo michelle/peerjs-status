@@ -4,15 +4,38 @@ body {
 }
 
 h1 {
+  text-align: center;
 }
 
 #content {
+
+}
+
+.details {
+  position: absolute;
+  right: 0px;
+  left: 570px;
+  min-width: 200px;
+  height: 570px;
+  overflow: hidden;
+}
+
+.tests {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.chart {
+  width: 570px;
+
 }
 
 table {
-  margin-left: 4%;
   border-spacing: 3px;
   float: left;
+  display: inline-block;
 }
 
 td {

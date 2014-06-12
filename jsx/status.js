@@ -152,14 +152,16 @@ var TestChart = React.createClass({
     }, this);
 
     return (
-      <div className="chart">
-        <table>
-          <tr className="client browsers">
-            <th></th>
-            {clientBrowsers}
-          </tr>
-          {results}
-        </table>
+      <div className="tests">
+        <div className="chart">
+          <table>
+            <tr className="client browsers">
+              <th></th>
+              {clientBrowsers}
+            </tr>
+            {results}
+          </table>
+        </div>
         <TestDetails data={this.state.selectedResult} />
       </div>
     );
