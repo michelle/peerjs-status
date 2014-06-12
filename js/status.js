@@ -185,8 +185,9 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
       }
     }
 
+    var hasDataClass = 'status ' + hasData;
     hasData = (
-      React.DOM.span( {className:hasData}, hasData)
+      React.DOM.span( {className:hasDataClass}, hasData)
     );
     var host = (
       React.DOM.div( {className:"host"}, 
@@ -200,7 +201,7 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
     );
 
     return (
-      React.DOM.h2(null, "P2P data is ", hasData, " between ", host, " and ", client)
+      React.DOM.h2( {className:"summary"}, "P2P data is ", hasData, " between ", host, " and ", client)
     );
   },
   render: function() {

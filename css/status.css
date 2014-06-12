@@ -24,8 +24,20 @@ h1 {
 
 }
 
-.details .client, .details .host {
+.summary .client, .summary .host {
   display: inline-block;
+  background-color: yellow;
+}
+
+.summary .status {
+  color: #ccc;
+}
+.summary .unavailable {
+  color: red;
+}
+
+.summary .available {
+  color: green;
 }
 
 .tests {
