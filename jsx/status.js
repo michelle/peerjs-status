@@ -93,6 +93,7 @@ var TestChart = React.createClass({
     } else if (!clickedResult.result) {
       // "unclick"
       this.setState({clicked: false});
+      this.selectHostAndClientAndResult(i, j, true);
     } else {
       this.selectHostAndClientAndResult(i, j, true);
       this.setState({clicked: true});
@@ -162,7 +163,10 @@ var TestChart = React.createClass({
             {results}
           </table>
         </div>
-        <TestDetails data={this.state.selectedResult} />
+        <TestDetails
+          data={this.state.selectedResult}
+          client={this.state.selectedClient}
+          host={this.state.selectedHost} />
       </div>
     );
   }
@@ -170,10 +174,40 @@ var TestChart = React.createClass({
 
 
 var TestDetails = React.createClass({
+  renderInner: function() {
+    var result = this.props.data;
+    var hasData = 'untested';
+    if (result && result.result) {
+      if (result.result.data) {
+        hasData = 'available';
+      } else {
+        hasData = 'unavailable';
+      }
+    }
+
+    hasData = (
+      <span className={hasData}>{hasData}</span>
+    );
+    var host = (
+      <div className="host">
+        <span className={browserClassName(this.props.host)}>{this.props.host}</span> <span className="label">(host)</span>
+      </div>
+    );
+    var client = (
+      <div className="client">
+        <span className={browserClassName(this.props.client)}>{this.props.client}</span> <span className="label">(client)</span>
+      </div>
+    );
+
+    return (
+      <h2>P2P data is {hasData} between {host} and {client}</h2>
+    );
+  },
   render: function() {
+    var inner = this.props.client && this.props.host ? this.renderInner() : undefined;
     return (
       <div className="details">
-        Results: {this.props.data}
+        {inner}
       </div>
     );
   }

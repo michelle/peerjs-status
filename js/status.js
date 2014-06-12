@@ -93,6 +93,7 @@ var TestChart = React.createClass({displayName: 'TestChart',
     } else if (!clickedResult.result) {
       // "unclick"
       this.setState({clicked: false});
+      this.selectHostAndClientAndResult(i, j, true);
     } else {
       this.selectHostAndClientAndResult(i, j, true);
       this.setState({clicked: true});
@@ -162,7 +163,10 @@ var TestChart = React.createClass({displayName: 'TestChart',
             results
           )
         ),
-        TestDetails( {data:this.state.selectedResult} )
+        TestDetails(
+          {data:this.state.selectedResult,
+          client:this.state.selectedClient,
+          host:this.state.selectedHost} )
       )
     );
   }
@@ -170,10 +174,40 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
 
 var TestDetails = React.createClass({displayName: 'TestDetails',
+  renderInner: function() {
+    var result = this.props.data;
+    var hasData = 'untested';
+    if (result && result.result) {
+      if (result.result.data) {
+        hasData = 'available';
+      } else {
+        hasData = 'unavailable';
+      }
+    }
+
+    hasData = (
+      React.DOM.span( {className:hasData}, hasData)
+    );
+    var host = (
+      React.DOM.div( {className:"host"}, 
+        React.DOM.span( {className:browserClassName(this.props.host)}, this.props.host), " ", React.DOM.span( {className:"label"}, "(host)")
+      )
+    );
+    var client = (
+      React.DOM.div( {className:"client"}, 
+        React.DOM.span( {className:browserClassName(this.props.client)}, this.props.client), " ", React.DOM.span( {className:"label"}, "(client)")
+      )
+    );
+
+    return (
+      React.DOM.h2(null, "P2P data is ", hasData, " between ", host, " and ", client)
+    );
+  },
   render: function() {
+    var inner = this.props.client && this.props.host ? this.renderInner() : undefined;
     return (
       React.DOM.div( {className:"details"}, 
-        "Results: ", this.props.data
+        inner
       )
     );
   }
