@@ -66,21 +66,44 @@ var TestChart = React.createClass({displayName: 'TestChart',
   },
 
   selectClient: function(i) {
-    this.setState({selectedClient: this.state.clientBrowsers[i], selectedHost: null});
+    if (!this.state.clicked) {
+      this.setState({selectedClient: this.state.clientBrowsers[i], selectedHost: null});
+    }
   },
   selectHost: function(i) {
-    this.setState({selectedHost: this.state.hostBrowsers[i], selectedClient: null});
+    if (!this.state.clicked) {
+      this.setState({selectedHost: this.state.hostBrowsers[i], selectedClient: null});
+    }
   },
-  selectHostAndClientFromResult: function(i, j) {
-    var selectedResult = this.state.results[i][j];
-    this.setState({
-      selectedClient: selectedResult.clientBrowser,
-      selectedHost: selectedResult.hostBrowser
-    });
+  selectHostAndClientAndResult: function(i, j, force) {
+    if (!this.state.clicked || force) {
+      var selectedResult = this.state.results[i][j];
+      this.setState({
+        selectedClient: selectedResult.clientBrowser,
+        selectedHost: selectedResult.hostBrowser,
+        selectedResult: selectedResult
+      });
+    }
+  },
+  clickHostAndClientAndResult: function(i, j) {
+    var clickedResult = this.state.results[i][j];
+    if (this.state.selectedClient === clickedResult.clientBrowser && this.state.selectedHost === clickedResult.hostBrowser && this.state.clicked) {
+      // "unclick"
+      this.setState({clicked: false});
+    } else if (!clickedResult.result) {
+      // "unclick"
+      this.setState({clicked: false});
+    } else {
+      this.selectHostAndClientAndResult(i, j, true);
+      this.setState({clicked: true});
+    }
   },
 
   isSelected: function(host, client) {
-    return this.state.selectedClient === client || this.state.selectedHost === host
+    return this.state.selectedClient === client || this.state.selectedHost === host;
+  },
+  isClicked: function(host, client) {
+    return this.state.clicked && this.state.selectedClient === client && this.state.selectedHost === host;
   },
 
   render: function() {
@@ -94,7 +117,9 @@ var TestChart = React.createClass({displayName: 'TestChart',
           ResultCell(
             {data:result,
             selected:this.isSelected(host, result.clientBrowser),
-            onMouseEnter:this.selectHostAndClientFromResult.bind(this, i, j)} )
+            clicked:this.isClicked(host, result.clientBrowser),
+            onClick:this.clickHostAndClientAndResult.bind(this, i, j),
+            onMouseEnter:this.selectHostAndClientAndResult.bind(this, i, j, false)} )
         );
       }, this);
 
@@ -127,12 +152,26 @@ var TestChart = React.createClass({displayName: 'TestChart',
     }, this);
 
     return (
-      React.DOM.table(null, 
-        React.DOM.tr( {className:"client browsers"}, 
-          React.DOM.th(null),
-          clientBrowsers
+      React.DOM.div( {className:"chart"}, 
+        React.DOM.table(null, 
+          React.DOM.tr( {className:"client browsers"}, 
+            React.DOM.th(null),
+            clientBrowsers
+          ),
+          results
         ),
-        results
+        TestDetails( {data:this.state.selectedResult} )
+      )
+    );
+  }
+});
+
+
+var TestDetails = React.createClass({displayName: 'TestDetails',
+  render: function() {
+    return (
+      React.DOM.div( {className:"details"}, 
+        "Results: ", this.props.data
       )
     );
   }
@@ -140,23 +179,37 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
 
 var ResultCell = React.createClass({displayName: 'ResultCell',
-  render: function() {
+  getInitialState: function() {
     var result = this.props.data;
-    var classes = (this.props.selected ? 'selected ' : '') +
-      'result ' + browserClassName(result.clientBrowser) + (result.result ? '' : ' empty');
-    // TODO: create better results! Or more deets on hover.
-    var pass = '';
     if (result.result) {
       if (result.result.data) {
-        pass = 'Yes';
+        return {pass: true};
+      }
+      return {pass: false};
+    }
+    return {};
+  },
+  render: function() {
+    var classes = (this.props.selected ? 'selected ' : '') +
+      'result ' + browserClassName(this.props.data.clientBrowser) +
+      (this.props.clicked ? ' clicked' : '');
+
+    // TODO: create better results! Or more deets on hover.
+    if (typeof this.state.pass !== 'undefined') {
+      classes += ' has';
+      if (this.state.pass) {
         classes += ' green';
       } else {
-        pass = 'No';
         classes += ' red';
       }
+    } else {
+      classes += ' empty';
     }
     return (
-      React.DOM.td( {className:classes, onMouseEnter:this.props.onMouseEnter} )
+      React.DOM.td(
+        {className:classes,
+        onClick:this.props.onClick,
+        onMouseEnter:this.props.onMouseEnter} )
     );
   }
 });

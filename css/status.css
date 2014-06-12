@@ -3,8 +3,16 @@
 body {
 }
 
+h1 {
+}
+
+#content {
+}
+
 table {
+  margin-left: 4%;
   border-spacing: 3px;
+  float: left;
 }
 
 td {
@@ -72,16 +80,24 @@ td, th {
   background-color: rgba(223, 229, 232, 1); /** light light blue */
 }
 
+.has.result {
+  cursor: pointer;
+}
+
 .result.red {
-  background-color: #ff0015;
+  background-color: rgb(222, 91, 38);
 }
 
 .result.green {
-  background-color: #91ff00;
+  background-color: rgb(142, 197, 0);
 }
 
 .result.selected {
   opacity: 1;
+}
+
+.result.clicked {
+  border: 3px solid rgba(0, 0, 0, 0.3);
 }
 
 .browser.selected {
