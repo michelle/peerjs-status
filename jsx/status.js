@@ -85,6 +85,7 @@ var TestChart = React.createClass({
       });
     }
   },
+  // TODO(michelle): Add # to URL so we can link specific tests.
   clickHostAndClientAndResult: function(i, j) {
     var clickedResult = this.state.results[i][j];
     if (this.state.selectedClient === clickedResult.clientBrowser && this.state.selectedHost === clickedResult.hostBrowser && this.state.clicked) {

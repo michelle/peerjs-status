@@ -1,10 +1,19 @@
 /** mono = (0.2125 * r) + (0.7154 * g) + (0.0721 * b); */
 
 body {
+  font-family: 'Vibur';
+  font-family: 'Sansita One';
+  font-family: 'Paytone One';
+  font-family: 'Abel', Arial;
 }
 
 h1 {
   text-align: center;
+}
+
+
+h1 em {
+  font-family: 'Megrim';
 }
 
 #content {
@@ -18,28 +27,46 @@ h1 {
   min-width: 200px;
   height: 570px;
   overflow: hidden;
+  background-color: rgba(247, 251, 253, 1);
 }
 
 .details .logs {
 
 }
 
-.summary .client, .summary .host {
+.summary .client, .summary .status, .summary .host {
   display: inline-block;
-  background-color: yellow;
+  padding: 5px;
+  border-bottom: 2px solid rgb(217, 229, 235);
+  background-color: #fff;
+  border-radius: 10px;
 }
 
 .summary .status {
-  color: #ccc;
 }
+
+.result.red {
+  background-color: rgb(222, 91, 38);
+}
+
+.result.green {
+  background-color: rgb(142, 197, 0);
+}
+
 .summary .unavailable {
-  color: red;
+  color: rgb(222, 91, 38);
+  border-color: rgb(222, 91, 38);
 }
 
 .summary .available {
-  color: green;
+  color: rgb(142, 197, 0);
+  border-color: rgb(142, 197, 0);
 }
 
+
+
+
+/** Test chart and details wrapper */
 .tests {
   position: relative;
   width: 100%;
@@ -125,14 +152,6 @@ td, th {
 
 .has.result {
   cursor: pointer;
-}
-
-.result.red {
-  background-color: rgb(222, 91, 38);
-}
-
-.result.green {
-  background-color: rgb(142, 197, 0);
 }
 
 .result.selected {
