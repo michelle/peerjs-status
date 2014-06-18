@@ -1,12 +1,11 @@
 /** @jsx React.DOM */
 var TestChart = React.createClass({
+  hashMatch: /^#(chrome\d+|firefox\d+)(chrome\d+|firefox\d+)$/,
   getInitialState: function() {
     return {
       results: [],
       clientBrowsers: [],
-      hostBrowsers: [],
-      selectedClient: null,
-      selectedHost: null
+      hostBrowsers: []
     };
   },
   componentWillMount: function() {
@@ -29,6 +28,17 @@ var TestChart = React.createClass({
     var resultsByHost = {};
     var hostBrowsers = {};
     var clientBrowsers = {};
+
+    // Determine if test is linked to.
+    var selection = window.location.hash;
+    var selectedClient, selectedHost, selectedResult, clicked;
+    if (selection && this.hashMatch.test(selection)) {
+      var match = this.hashMatch.exec(selection);
+      selectedClient = fullBrowserNameFromSpecific(match[1]);
+      selectedHost = fullBrowserNameFromSpecific(match[2]);
+      clicked = true;
+    }
+
     data.map(function(result) {
       var hostName = browserName(result.host.browser);
       hostBrowsers[hostName] = 1;
@@ -59,12 +69,26 @@ var TestChart = React.createClass({
     hostBrowsers.map(function(hostBrowser, i) {
       results[i] = [];
       clientBrowsers.map(function(clientBrowser, j) {
-        results[i][j] = resultsByHost[hostBrowser][clientBrowser] || {hostBrowser: hostBrowser, clientBrowser: clientBrowser};
+        var result = resultsByHost[hostBrowser][clientBrowser] || {hostBrowser: hostBrowser, clientBrowser: clientBrowser};
+        results[i][j] = result;
+        if (hostBrowser === selectedHost && clientBrowser === selectedClient) {
+          selectedResult = result;
+        }
       });
     });
     var version = data[0] ? data[0].version : '...';
 
-    this.setState({version: version, results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
+
+    this.setState({
+      version: version,
+      results: results,
+      hostBrowsers: hostBrowsers,
+      clientBrowsers: clientBrowsers,
+      selectedClient: selectedClient,
+      selectedHost: selectedHost,
+      selectedResult: selectedResult,
+      clicked: clicked
+    });
   },
 
   selectClient: function(i) {
@@ -100,6 +124,7 @@ var TestChart = React.createClass({
     } else {
       this.selectHostAndClientAndResult(i, j, true);
       this.setState({clicked: true});
+      window.location.hash = specificBrowserClassName(clickedResult.clientBrowser) + specificBrowserClassName(clickedResult.hostBrowser);
     }
   },
 
@@ -318,7 +343,6 @@ var ResultCell = React.createClass({
       'result ' + browserClassName(this.props.data.clientBrowser) +
       (this.props.clicked ? ' clicked' : '');
 
-    // TODO: create better results! Or more deets on hover.
     if (typeof this.state.pass !== 'undefined') {
       classes += ' has';
       if (this.state.pass) {
@@ -366,4 +390,18 @@ function browserName(browserHash) {
 
 function browserClassName(browserString) {
   return browserString.replace(/[\s\(\)\d]/g, '').toLowerCase();
+}
+
+function specificBrowserClassName(browserString) {
+  return browserString.replace(/[\s\(\)]/g, '').toLowerCase();
+}
+
+function fullBrowserNameFromSpecific(specificString) {
+  var numberString = /\d+/.exec(specificString)[0];
+  specificString = specificString.split('');
+  for (var i = 0, ii = numberString.length; i < ii; i += 1) {
+    specificString.pop();
+  }
+  var first = specificString.shift().toUpperCase();
+  return first + specificString.join('') + ' (' + numberString + ')';
 }
