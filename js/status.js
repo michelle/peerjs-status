@@ -62,7 +62,9 @@ var TestChart = React.createClass({displayName: 'TestChart',
         results[i][j] = resultsByHost[hostBrowser][clientBrowser] || {hostBrowser: hostBrowser, clientBrowser: clientBrowser};
       });
     });
-    this.setState({results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
+    var version = data[0] ? data[0].version : '...';
+
+    this.setState({version: version, results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
   },
 
   selectClient: function(i) {
@@ -85,6 +87,7 @@ var TestChart = React.createClass({displayName: 'TestChart',
       });
     }
   },
+  // TODO(michelle): Add # to URL so we can link specific tests.
   clickHostAndClientAndResult: function(i, j) {
     var clickedResult = this.state.results[i][j];
     if (this.state.selectedClient === clickedResult.clientBrowser && this.state.selectedHost === clickedResult.hostBrowser && this.state.clicked) {
@@ -154,6 +157,9 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
     return (
       React.DOM.div( {className:"tests"}, 
+        React.DOM.div( {className:"version"}, 
+          "Latest version: ", React.DOM.strong(null, this.state.version)
+        ),
         React.DOM.div( {className:"chart"}, 
           React.DOM.table(null, 
             React.DOM.tr( {className:"client browsers"}, 
@@ -176,39 +182,114 @@ var TestChart = React.createClass({displayName: 'TestChart',
 var TestDetails = React.createClass({displayName: 'TestDetails',
   renderInner: function() {
     var result = this.props.data;
-    var hasData = 'untested';
+    var hasDataValue = 'untested';
     if (result && result.result) {
       if (result.result.data) {
-        hasData = 'available';
+        hasDataValue = 'available';
       } else {
-        hasData = 'unavailable';
+        hasDataValue = 'unavailable';
       }
     }
 
-    var hasDataClass = 'status ' + hasData;
+    var hasDataClass = 'status ' + hasDataValue;
     hasData = (
-      React.DOM.span( {className:hasDataClass}, hasData)
+      React.DOM.span( {className:hasDataClass}, hasDataValue)
     );
     var host = (
-      React.DOM.div( {className:"host"}, 
-        React.DOM.span( {className:browserClassName(this.props.host)}, this.props.host), " ", React.DOM.span( {className:"label"}, "(host)")
+      React.DOM.div( {className:'host ' + browserClassName(this.props.host)}, 
+        React.DOM.span( {className:"name"}, this.props.host), " ", React.DOM.span( {className:"label"}, "(host)")
       )
     );
     var client = (
-      React.DOM.div( {className:"client"}, 
-        React.DOM.span( {className:browserClassName(this.props.client)}, this.props.client), " ", React.DOM.span( {className:"label"}, "(client)")
+      React.DOM.div( {className:'client ' + browserClassName(this.props.client)}, 
+        React.DOM.span( {className:"name"}, this.props.client), " ", React.DOM.span( {className:"label"}, "(client)")
       )
     );
 
+    var inner = [];
+    inner.push(
+      React.DOM.div( {className:'summary ' + hasDataValue}, "P2P data is ", hasData, " between ", host, " and ", client,".")
+    );
+    if (hasDataValue !== 'untested') {
+      inner.push(this.renderAdvanced());
+    }
+    return inner;
+  },
+  renderDefault: function() {
     return (
-      React.DOM.h2( {className:"summary"}, "P2P data is ", hasData, " between ", host, " and ", client)
+      React.DOM.div( {className:"summary"}, "No test selected.")
+    );
+  },
+  renderAdvanced: function() {
+    var result = this.props.data;
+    return (
+      React.DOM.div( {className:"advanced"}, 
+        Logs( {clientLogs:result.client.log, hostLogs:result.host.log} ),
+        React.DOM.div( {className:"history"}, 
+          "TODO: show last passing run / historical version runs."
+        )
+      )
     );
   },
   render: function() {
-    var inner = this.props.client && this.props.host ? this.renderInner() : undefined;
+    var inner;
+    if (this.props.client && this.props.host) {
+      inner = this.renderInner();
+    } else {
+      inner = this.renderDefault();
+    }
     return (
       React.DOM.div( {className:"details"}, 
         inner
+      )
+    );
+  }
+});
+
+var Logs = React.createClass({displayName: 'Logs',
+  formatLogLine: function(type, log) {
+    log = log.split(' ');
+    var timestamp = log.shift();
+    log = log.join(' ');
+    return (
+      React.DOM.div( {className:'log ' + type}, 
+        React.DOM.span( {className:"timestamp"}, timestamp),log
+      )
+    );
+  },
+  render: function() {
+    var clientLogs = this.props.clientLogs;
+    var hostLogs = this.props.hostLogs;
+    var mixedLogs;
+
+    if (!hostLogs) {
+      mixedLogs = clientLogs.map(this.formatLogLine.bind(this, 'client'));
+    } else if (!clientLogs) {
+      mixedLogs = hostLogs.map(this.formatLogLine.bind(this, 'host'));
+    } else {
+      clientLogs = clientLogs.map(function(log) {
+        return {log: log, time: parseInt(log.split(' ')[0]), type: 'client'};
+      });
+      hostLogs = hostLogs.map(function(log) {
+        return {log: log, time: parseInt(log.split(' ')[0]), type: 'host'};
+      });
+      mixedLogs = clientLogs.concat(hostLogs);
+      mixedLogs.sort(function(a, b) {
+        if (a.time < b.time) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      mixedLogs = mixedLogs.map(function(data) {
+        return this.formatLogLine(data.type, data.log);
+      }, this);
+    }
+
+    return (
+      React.DOM.div( {className:"logs"}, 
+        React.DOM.h3(null, "Logs"),
+        mixedLogs
       )
     );
   }

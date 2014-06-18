@@ -5,6 +5,7 @@ body {
   font-family: 'Sansita One';
   font-family: 'Paytone One';
   font-family: 'Abel', Arial;
+  color: #454545;
 }
 
 h1 {
@@ -27,39 +28,64 @@ h1 em {
   min-width: 200px;
   height: 570px;
   overflow: hidden;
-  background-color: rgba(247, 251, 253, 1);
 }
 
 .details .logs {
 
 }
 
+.log.client {
+  color: red;
+}
+
+.log.host {
+  color: blue;
+}
+
+.summary {
+  background-color: rgb(223, 229, 232);
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  font-weight: 400;
+  font-size: 18px;
+  color: rgba(0,0,0,0.5);
+}
+
 .summary .client, .summary .status, .summary .host {
   display: inline-block;
-  padding: 5px;
-  border-bottom: 2px solid rgb(217, 229, 235);
-  background-color: #fff;
-  border-radius: 10px;
+  font-weight: 600;
+  /*padding: 3px;
+  border-bottom: 2px solid rgba(0,0,0,0.2);*/
 }
 
-.summary .status {
+.summary .label {
+  font-size: 10px;
+  text-transform: uppercase;
 }
 
-.result.red {
+.summary .firefox {
+  border-bottom-color: rgb(255, 136, 44);
+}
+
+.summary .chrome {
+  border-bottom-color: rgb(65, 162, 211);
+}
+
+.summary.unavailable, .result.red {
   background-color: rgb(222, 91, 38);
+  color: rgba(255,255,255,0.7);
 }
 
-.result.green {
+.summary.available, .result.green {
   background-color: rgb(142, 197, 0);
 }
 
 .summary .unavailable {
-  color: rgb(222, 91, 38);
   border-color: rgb(222, 91, 38);
 }
 
 .summary .available {
-  color: rgb(142, 197, 0);
   border-color: rgb(142, 197, 0);
 }
 

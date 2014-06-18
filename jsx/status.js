@@ -62,7 +62,9 @@ var TestChart = React.createClass({
         results[i][j] = resultsByHost[hostBrowser][clientBrowser] || {hostBrowser: hostBrowser, clientBrowser: clientBrowser};
       });
     });
-    this.setState({results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
+    var version = data[0] ? data[0].version : '...';
+
+    this.setState({version: version, results: results, hostBrowsers: hostBrowsers, clientBrowsers: clientBrowsers});
   },
 
   selectClient: function(i) {
@@ -155,6 +157,9 @@ var TestChart = React.createClass({
 
     return (
       <div className="tests">
+        <div className="version">
+          Latest version: <strong>{this.state.version}</strong>
+        </div>
         <div className="chart">
           <table>
             <tr className="client browsers">
@@ -177,39 +182,114 @@ var TestChart = React.createClass({
 var TestDetails = React.createClass({
   renderInner: function() {
     var result = this.props.data;
-    var hasData = 'untested';
+    var hasDataValue = 'untested';
     if (result && result.result) {
       if (result.result.data) {
-        hasData = 'available';
+        hasDataValue = 'available';
       } else {
-        hasData = 'unavailable';
+        hasDataValue = 'unavailable';
       }
     }
 
-    var hasDataClass = 'status ' + hasData;
+    var hasDataClass = 'status ' + hasDataValue;
     hasData = (
-      <span className={hasDataClass}>{hasData}</span>
+      <span className={hasDataClass}>{hasDataValue}</span>
     );
     var host = (
-      <div className="host">
-        <span className={browserClassName(this.props.host)}>{this.props.host}</span> <span className="label">(host)</span>
+      <div className={'host ' + browserClassName(this.props.host)}>
+        <span className="name">{this.props.host}</span> <span className="label">(host)</span>
       </div>
     );
     var client = (
-      <div className="client">
-        <span className={browserClassName(this.props.client)}>{this.props.client}</span> <span className="label">(client)</span>
+      <div className={'client ' + browserClassName(this.props.client)}>
+        <span className="name">{this.props.client}</span> <span className="label">(client)</span>
       </div>
     );
 
+    var inner = [];
+    inner.push(
+      <div className={'summary ' + hasDataValue}>P2P data is {hasData} between {host} and {client}.</div>
+    );
+    if (hasDataValue !== 'untested') {
+      inner.push(this.renderAdvanced());
+    }
+    return inner;
+  },
+  renderDefault: function() {
     return (
-      <h2 className="summary">P2P data is {hasData} between {host} and {client}</h2>
+      <div className="summary">No test selected.</div>
+    );
+  },
+  renderAdvanced: function() {
+    var result = this.props.data;
+    return (
+      <div className="advanced">
+        <Logs clientLogs={result.client.log} hostLogs={result.host.log} />
+        <div className="history">
+          TODO: show last passing run / historical version runs.
+        </div>
+      </div>
     );
   },
   render: function() {
-    var inner = this.props.client && this.props.host ? this.renderInner() : undefined;
+    var inner;
+    if (this.props.client && this.props.host) {
+      inner = this.renderInner();
+    } else {
+      inner = this.renderDefault();
+    }
     return (
       <div className="details">
         {inner}
+      </div>
+    );
+  }
+});
+
+var Logs = React.createClass({
+  formatLogLine: function(type, log) {
+    log = log.split(' ');
+    var timestamp = log.shift();
+    log = log.join(' ');
+    return (
+      <div className={'log ' + type}>
+        <span className="timestamp">{timestamp}</span>{log}
+      </div>
+    );
+  },
+  render: function() {
+    var clientLogs = this.props.clientLogs;
+    var hostLogs = this.props.hostLogs;
+    var mixedLogs;
+
+    if (!hostLogs) {
+      mixedLogs = clientLogs.map(this.formatLogLine.bind(this, 'client'));
+    } else if (!clientLogs) {
+      mixedLogs = hostLogs.map(this.formatLogLine.bind(this, 'host'));
+    } else {
+      clientLogs = clientLogs.map(function(log) {
+        return {log: log, time: parseInt(log.split(' ')[0]), type: 'client'};
+      });
+      hostLogs = hostLogs.map(function(log) {
+        return {log: log, time: parseInt(log.split(' ')[0]), type: 'host'};
+      });
+      mixedLogs = clientLogs.concat(hostLogs);
+      mixedLogs.sort(function(a, b) {
+        if (a.time < b.time) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      mixedLogs = mixedLogs.map(function(data) {
+        return this.formatLogLine(data.type, data.log);
+      }, this);
+    }
+
+    return (
+      <div className="logs">
+        <h3>Logs</h3>
+        {mixedLogs}
       </div>
     );
   }
