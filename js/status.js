@@ -157,9 +157,6 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
     return (
       React.DOM.div( {className:"tests"}, 
-        React.DOM.div( {className:"version"}, 
-          "Latest version: ", React.DOM.strong(null, this.state.version)
-        ),
         React.DOM.div( {className:"chart"}, 
           React.DOM.table(null, 
             React.DOM.tr( {className:"client browsers"}, 
@@ -167,6 +164,14 @@ var TestChart = React.createClass({displayName: 'TestChart',
               clientBrowsers
             ),
             results
+          ),
+          React.DOM.div( {className:"footer"}, 
+            React.DOM.span( {className:"github"}, 
+              React.DOM.a( {href:""}, "Fork"), " ", React.DOM.a( {href:""}, "me"), " ", React.DOM.a( {href:""}, "on"), " ", React.DOM.a( {href:""}, "Github"),"."
+            ),
+            React.DOM.span( {className:"version"}, 
+              "Latest tested version: ", React.DOM.strong(null, this.state.version),". (Suggestions? ", React.DOM.a( {href:"mailto:team@peerjs.com"}, "Email us"),"!)"
+            )
           )
         ),
         TestDetails(
@@ -197,12 +202,12 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
     );
     var host = (
       React.DOM.div( {className:'host ' + browserClassName(this.props.host)}, 
-        React.DOM.span( {className:"name"}, this.props.host), " ", React.DOM.span( {className:"label"}, "(host)")
+        React.DOM.span( {className:"name"}, this.props.host), " ", React.DOM.span( {className:"label"}, "host")
       )
     );
     var client = (
       React.DOM.div( {className:'client ' + browserClassName(this.props.client)}, 
-        React.DOM.span( {className:"name"}, this.props.client), " ", React.DOM.span( {className:"label"}, "(client)")
+        React.DOM.span( {className:"name"}, this.props.client), " ", React.DOM.span( {className:"label"}, "client")
       )
     );
 
@@ -240,6 +245,7 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
     }
     return (
       React.DOM.div( {className:"details"}, 
+        React.DOM.h1(null, "PeerJS ", React.DOM.em(null, "Status")),
         inner
       )
     );

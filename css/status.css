@@ -1,3 +1,7 @@
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,li,ol,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style-type:none;}caption,th{text-align:left;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{font-size:100%;}
+a {outline: none;} /* Gets rid of Firefox's dotted borders */
+a img {border: none;} /* Gets rid of IE's blue borders */
+
 /** mono = (0.2125 * r) + (0.7154 * g) + (0.0721 * b); */
 
 body {
@@ -6,10 +10,20 @@ body {
   font-family: 'Paytone One';
   font-family: 'Abel', Arial;
   color: #454545;
+  background-color: rgb(250,250,250);
+}
+
+a {
+  color: rgba(65, 162, 211, 1);
+}
+a:hover {
+  color: #454545;
 }
 
 h1 {
-  text-align: center;
+  text-align: left;
+  margin: 0px 0px 12px 0px;
+  padding: 0px;
 }
 
 
@@ -17,29 +31,62 @@ h1 em {
   font-family: 'Megrim';
 }
 
-#content {
+.footer {
+  margin: 5px 10px 0 5px;
+  font-size: 12px;
+}
 
+.footer strong {
+}
+
+.version {
+  float: right;
+}
+
+.github {
+  float: left;
+}
+
+#content {
+  height: 100%;
+  min-height: 100%;
 }
 
 .details {
   position: absolute;
+  top: 50px;
   right: 0px;
-  left: 570px;
+  left: 600px;
   min-width: 200px;
-  height: 570px;
   overflow: hidden;
 }
 
 .details .logs {
-
+  margin: 10px 0;
+  max-height: 300px;
+  overflow: scroll;
 }
 
-.log.client {
-  color: red;
+.log.client, .summary .client .label {
+  color: rgb(65, 162, 211);
 }
 
-.log.host {
-  color: blue;
+.log.host, .summary .host .label {
+  color: rgb(255, 136, 44);
+}
+
+.log {
+  font-size: 14px;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.log .timestamp {
+  background-color: #eee;
+  color: #000;
+  margin-left: 5px;
+  font-size: 10px;
+  float: right;
 }
 
 .summary {
@@ -62,6 +109,9 @@ h1 em {
 .summary .label {
   font-size: 10px;
   text-transform: uppercase;
+  background-color: #fff;
+  padding: 2px 3px;
+  border-radius: 3px;
 }
 
 .summary .firefox {
@@ -101,14 +151,15 @@ h1 em {
 }
 
 .chart {
-  width: 570px;
+  width: 610px;
+  padding: 50px 20px 20px 20px;
+  box-sizing: border-box;
 
 }
 
 table {
+  border-collapse: none;
   border-spacing: 3px;
-  float: left;
-  display: inline-block;
 }
 
 td {

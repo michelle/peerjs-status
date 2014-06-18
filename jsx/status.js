@@ -157,9 +157,6 @@ var TestChart = React.createClass({
 
     return (
       <div className="tests">
-        <div className="version">
-          Latest version: <strong>{this.state.version}</strong>
-        </div>
         <div className="chart">
           <table>
             <tr className="client browsers">
@@ -168,6 +165,14 @@ var TestChart = React.createClass({
             </tr>
             {results}
           </table>
+          <div className="footer">
+            <span className="github">
+              <a href="">Fork</a> <a href="">me</a> <a href="">on</a> <a href="">Github</a>.
+            </span>
+            <span className="version">
+              Latest tested version: <strong>{this.state.version}</strong>. (Suggestions? <a href="mailto:team@peerjs.com">Email us</a>!)
+            </span>
+          </div>
         </div>
         <TestDetails
           data={this.state.selectedResult}
@@ -197,12 +202,12 @@ var TestDetails = React.createClass({
     );
     var host = (
       <div className={'host ' + browserClassName(this.props.host)}>
-        <span className="name">{this.props.host}</span> <span className="label">(host)</span>
+        <span className="name">{this.props.host}</span> <span className="label">host</span>
       </div>
     );
     var client = (
       <div className={'client ' + browserClassName(this.props.client)}>
-        <span className="name">{this.props.client}</span> <span className="label">(client)</span>
+        <span className="name">{this.props.client}</span> <span className="label">client</span>
       </div>
     );
 
@@ -240,6 +245,7 @@ var TestDetails = React.createClass({
     }
     return (
       <div className="details">
+        <h1>PeerJS <em>Status</em></h1>
         {inner}
       </div>
     );
