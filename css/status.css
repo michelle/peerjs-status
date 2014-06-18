@@ -63,7 +63,8 @@ h1 em {
 
 .details .logs {
   margin: 10px 0;
-  max-height: 300px;
+  /** TODO: make max height 300 when we add the hisotry display. */
+  max-height: 400px;
   overflow: scroll;
 }
 

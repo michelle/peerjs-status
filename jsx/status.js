@@ -111,7 +111,6 @@ var TestChart = React.createClass({
       });
     }
   },
-  // TODO(michelle): Add # to URL so we can link specific tests.
   clickHostAndClientAndResult: function(i, j) {
     var clickedResult = this.state.results[i][j];
     if (this.state.selectedClient === clickedResult.clientBrowser && this.state.selectedHost === clickedResult.hostBrowser && this.state.clicked) {
@@ -252,11 +251,12 @@ var TestDetails = React.createClass({
   },
   renderAdvanced: function() {
     var result = this.props.data;
+    // TODO: show last passing run / historical version runs in the History
+    // component.
     return (
       <div className="advanced">
         <Logs clientLogs={result.client.log} hostLogs={result.host.log} />
         <div className="history">
-          TODO: show last passing run / historical version runs.
         </div>
       </div>
     );
