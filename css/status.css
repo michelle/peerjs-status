@@ -5,10 +5,7 @@ a img {border: none;} /* Gets rid of IE's blue borders */
 /** mono = (0.2125 * r) + (0.7154 * g) + (0.0721 * b); */
 
 body {
-  font-family: 'Vibur';
-  font-family: 'Sansita One';
-  font-family: 'Paytone One';
-  font-family: 'Abel', Arial;
+  font-family: 'Abel', Helvetica;
   color: #454545;
   background-color: rgb(250,250,250);
 }
@@ -113,6 +110,7 @@ h1 em {
   background-color: #fff;
   padding: 2px 3px;
   border-radius: 3px;
+  font-family: 'Abel', Arial;
 }
 
 .summary .firefox {
@@ -182,6 +180,7 @@ td, th {
   border-radius: 30px;
   opacity: 0.7;
   font-size: 11px;
+  font-family: 'Vibur';
 }
 
 

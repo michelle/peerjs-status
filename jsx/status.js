@@ -277,6 +277,7 @@ var TestDetails = React.createClass({
   }
 });
 
+// TODO: hide logline until visible.
 var Logs = React.createClass({
   formatLogLine: function(type, log) {
     log = log.split(' ');
