@@ -273,13 +273,10 @@ td, th {
   opacity: 1;
 }
 
-.result.green.clicked {
-  background-color: rgb(27, 89, 23)
+.chart.is-clicked .result{
+  opacity: 0.3;
 }
 
-.result.red.clicked {
-  background-color: rgb(125, 52, 23)
-}
 
 .result.clicked {
   border: 3px solid rgba(0, 0, 0, 0.3);
@@ -287,4 +284,12 @@ td, th {
 
 .browser.selected {
   opacity: 1;
+}
+
+.result.red.clicked {
+  opacity: 1 !important;
+}
+
+.result.green.clicked {
+  opacity: 1 !important;
 }

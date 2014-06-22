@@ -122,11 +122,7 @@ var TestChart = React.createClass({displayName: 'TestChart',
   },
   clickHostAndClientAndResult: function(i, j) {
     var clickedResult = this.state.results[i][j];
-    if (this.state.selectedClient === clickedResult.clientBrowser && this.state.selectedHost === clickedResult.hostBrowser && this.state.clicked) {
-      // "unclick"
-      this.setState({clicked: false});
-    } else if (!clickedResult.result) {
-      // "unclick"
+    if (this.state.clicked) {
       this.setState({clicked: false});
       this.selectHostAndClientAndResult(i, j, true);
     } else {
@@ -144,17 +140,20 @@ var TestChart = React.createClass({displayName: 'TestChart',
   },
 
   render: function() {
+    var hasClicked = false;
     var results = this.state.results.map(function(hostResults, i) {
       var host = hostResults[0].hostBrowser;
       hostResults = hostResults.map(function(result, j) {
         if (host !== result.hostBrowser) {
           console.error('Hosts don\'t match in the same column!!', host, result.hostBrowser);
         }
+        var clicked = this.isClicked(host, result.clientBrowser);
+        hasClicked = hasClicked || clicked;
         return (
           ResultCell(
             {data:result,
             selected:this.isSelected(host, result.clientBrowser),
-            clicked:this.isClicked(host, result.clientBrowser),
+            clicked:clicked,
             onClick:this.clickHostAndClientAndResult.bind(this, i, j),
             onMouseEnter:this.selectHostAndClientAndResult.bind(this, i, j, false)} )
         );
@@ -190,7 +189,7 @@ var TestChart = React.createClass({displayName: 'TestChart',
 
     return (
       React.DOM.div( {className:"tests"}, 
-        React.DOM.div( {className:"chart"}, 
+        React.DOM.div( {className:'chart ' + (hasClicked ? 'is-clicked' : '')}, 
           React.DOM.table(null, 
             React.DOM.tr( {className:"client browsers"}, 
               React.DOM.th(null),
