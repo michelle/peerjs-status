@@ -200,7 +200,7 @@ var TestChart = React.createClass({displayName: 'TestChart',
           ),
           React.DOM.div( {className:"footer"}, 
             React.DOM.span( {className:"github"}, 
-              React.DOM.a( {href:""}, "Fork"), " ", React.DOM.a( {href:""}, "me"), " ", React.DOM.a( {href:""}, "on"), " ", React.DOM.a( {href:""}, "Github"),"."
+              React.DOM.a( {href:"https://github.com/michelle/peerjs-status"}, "Fork"), " ", React.DOM.a( {href:"https://github.com/peers/peerjs-test"}, "me"),"."
             ),
             React.DOM.span( {className:"version"}, 
               "Latest tested version: ", React.DOM.strong(null, this.state.version),". (Suggestions? ", React.DOM.a( {href:"mailto:team@peerjs.com"}, "Email us"),"!)"

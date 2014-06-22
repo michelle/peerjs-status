@@ -200,7 +200,7 @@ var TestChart = React.createClass({
           </table>
           <div className="footer">
             <span className="github">
-              <a href="">Fork</a> <a href="">me</a> <a href="">on</a> <a href="">Github</a>.
+              <a href="https://github.com/michelle/peerjs-status">Fork</a> <a href="https://github.com/peers/peerjs-test">me</a>.
             </span>
             <span className="version">
               Latest tested version: <strong>{this.state.version}</strong>. (Suggestions? <a href="mailto:team@peerjs.com">Email us</a>!)

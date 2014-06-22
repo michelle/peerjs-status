@@ -70,12 +70,18 @@ h3 {
   opacity: 0.8;
 }
 
+.log.client {
+  color: #555;
+}
+.log.host {
+  color: #999;
+}
 
-.log.client, .summary .client .label {
+.logs:hover .client, .summary .client .label {
   color: rgb(234, 64, 68);
 }
 
-.log.host, .summary .host .label {
+.logs:hover .host, .summary .host .label {
   color: rgb(29, 114, 180);
 }
 
@@ -84,6 +90,7 @@ h3 {
   font-size: 12px;
   padding: 5px 0;
   border-bottom: 1px solid #fff;
+  transition: color 200ms ease;
 }
 
 .log .timestamp {
@@ -196,24 +203,24 @@ td, th {
 
 
 .browser.chrome {
-  border-top: 10px solid rgb(117, 117, 117); /** red */
-  border-left: 8px solid rgb(148, 148, 148); /** green */
-  border-right: 8px solid rgb(207, 207, 207); /** yellow */
+  border-top: 12px solid rgb(117, 117, 117); /** red */
+  border-left: 10px solid rgb(148, 148, 148); /** green */
+  border-right: 10px solid rgb(207, 207, 207); /** yellow */
   background-color: rgb(144, 144, 144); /** light blue */
   vertical-align: top;
 }
 
 .browser.firefox {
-  border-left: 8px solid rgb(115, 115, 115); /** red */
-  border-bottom: 10px solid rgb(155, 155, 155); /** orange */
-  border-right: 8px solid rgb(196, 196, 196); /** yellow */
+  border-left: 10px solid rgb(115, 115, 115); /** red */
+  border-bottom: 12px solid rgb(155, 155, 155); /** orange */
+  border-right: 10px solid rgb(196, 196, 196); /** yellow */
   background-color: rgb(101, 101, 101); /** blue */
   vertical-align: bottom;
 }
 
 .browser.opera {
   border-color: rgb(155, 155, 155); /** red */
-  border-width: 2px 8px 2px 8px;
+  border-width: 2px 12px 2px 12px;
   border-style: solid;
   background-color: #fff; /** white */
   vertical-align: middle;
@@ -223,7 +230,7 @@ td, th {
 
 .browser.opera.selected {
   border-color: rgb(234, 64, 68); /** red */
-  border-width: 2px 8px 2px 8px;
+  border-width: 2px 12px 2px 12px;
   border-style: solid;
   background-color: #fff; /** white */
   vertical-align: middle;
@@ -232,18 +239,18 @@ td, th {
 }
 
 .browser.chrome.selected {
-  border-top: 10px solid rgba(255, 80, 84, 1); /** red */
-  border-left: 8px solid rgba(0, 197, 93, 1); /** green */
-  border-right: 8px solid rgba(255, 210, 33, 1); /** yellow */
+  border-top: 12px solid rgba(255, 80, 84, 1); /** red */
+  border-left: 10px solid rgba(0, 197, 93, 1); /** green */
+  border-right: 10px solid rgba(255, 210, 33, 1); /** yellow */
   background-color: rgba(65, 162, 211, 1); /** light blue */
   box-shadow: 2px 2px 0px rgba(223, 229, 232, 1), -2px 2px 0px rgba(223, 229, 232, 1), -2px -2px 0px rgba(223, 229, 232, 1), 2px -2px 0px rgba(223, 229, 232, 1);
   vertical-align: top;
 }
 
 .browser.firefox.selected {
-  border-left: 8px solid rgba(222, 91, 38, 1); /** red */
-  border-bottom: 10px solid rgba(255, 136, 44, 1); /** orange */
-  border-right: 8px solid rgba(245, 200, 18, 1); /** yellow */
+  border-left: 10px solid rgba(222, 91, 38, 1); /** red */
+  border-bottom: 12px solid rgba(255, 136, 44, 1); /** orange */
+  border-right: 10px solid rgba(245, 200, 18, 1); /** yellow */
   background-color: rgba(29, 114, 180, 1); /** blue */
   box-shadow: 2px 2px 0px rgba(223, 229, 232, 1), -2px 2px 0px rgba(223, 229, 232, 1), -2px -2px 0px rgba(223, 229, 232, 1), 2px -2px 0px rgba(223, 229, 232, 1);
   vertical-align: bottom;
