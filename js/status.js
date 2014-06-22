@@ -279,7 +279,7 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
     }
     return (
       React.DOM.div( {className:"details"}, 
-        React.DOM.h1(null, "PeerJS ", React.DOM.em(null, "St",React.DOM.span( {className:"green"}, "a"),"tus")),
+        React.DOM.h1(null, React.DOM.a( {href:"/"}, "PeerJS"), " ", React.DOM.em(null, "St",React.DOM.span( {className:"green"}, "a"),"tus")),
         inner
       )
     );

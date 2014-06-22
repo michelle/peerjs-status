@@ -279,7 +279,7 @@ var TestDetails = React.createClass({
     }
     return (
       <div className="details">
-        <h1>PeerJS <em>St<span className="green">a</span>tus</em></h1>
+        <h1><a href="/">PeerJS</a> <em>St<span className="green">a</span>tus</em></h1>
         {inner}
       </div>
     );

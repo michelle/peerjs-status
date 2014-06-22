@@ -142,6 +142,16 @@ h1 .green {
   color: rgb(142, 197, 0);
 }
 
+h1 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1 a:hover {
+  color: rgb(29, 114, 180);
+}
+
+
 .summary .unavailable {
   border-color: rgb(222, 91, 38);
 }
@@ -157,7 +167,7 @@ h1 .green {
 .tests {
   position: relative;
   width: 100%;
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
 }
 
