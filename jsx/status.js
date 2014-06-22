@@ -1,6 +1,9 @@
 /** @jsx React.DOM */
+
+// TODO: !!! Separate OS X/Windows test charts? Or distinguish?
+// TODO: !!! Handle Opera.
 var TestChart = React.createClass({
-  hashMatch: /^#(chrome\d+|firefox\d+)(chrome\d+|firefox\d+)$/,
+  hashMatch: /^#(chrome\d+|firefox\d+|opera\d+)(chrome\d+|firefox\d+|opera\d+)$/,
   getInitialState: function() {
     return {
       results: [],
@@ -40,11 +43,11 @@ var TestChart = React.createClass({
     }
 
     data.map(function(result) {
-      var hostName = browserName(result.host.browser);
+      var hostName = browserName(result.host.setting);
       hostBrowsers[hostName] = 1;
       result.hostBrowser = hostName;
 
-      var clientName = browserName(result.client.browser);
+      var clientName = browserName(result.client.setting);
       clientBrowsers[clientName] = 1;
       result.clientBrowser = clientName;
 
@@ -53,11 +56,17 @@ var TestChart = React.createClass({
     });
 
     function browserSort(a, b) {
+      console.log(a, b)
       // For same browser, sort in reverse.
-      if (a.indexOf('Chrome') === b.indexOf('Chrome')) {
+      if (a.indexOf('Chrome') === b.indexOf('Chrome') && a.indexOf('Firefox') === b.indexOf('Firefox')) {
         return b > a ? 1 : -1;
+      } else if (b.indexOf('Chrome') === 0) {
+        return 1;
+      } else if (a.indexOf('Chrome') === 0) {
+        return -1;
       } else {
-        return b.indexOf('Chrome') === 0 ? 1 : -1;
+        // Opera last.
+        return b.indexOf('Firefox') === 0 ? 1 : -1;
       }
     };
 
@@ -255,6 +264,7 @@ var TestDetails = React.createClass({
     // component.
     return (
       <div className="advanced">
+        <h3>Logs</h3>
         <Logs clientLogs={result.client.log} hostLogs={result.host.log} />
         <div className="history">
         </div>
@@ -270,7 +280,7 @@ var TestDetails = React.createClass({
     }
     return (
       <div className="details">
-        <h1>PeerJS <em>Status</em></h1>
+        <h1>PeerJS <em>St<span className="green">a</span>tus</em></h1>
         {inner}
       </div>
     );
@@ -320,7 +330,6 @@ var Logs = React.createClass({
 
     return (
       <div className="logs">
-        <h3>Logs</h3>
         {mixedLogs}
       </div>
     );
@@ -378,15 +387,14 @@ var Browser = React.createClass({
 
 
 React.renderComponent(
-  // TODO: <TestChart url='/ajax/status' />,
-  <TestChart url='dummy.json' />,
+  <TestChart url='results.json' />,
   document.getElementById('content')
 );
 
 
 // Helpers
 function browserName(browserHash) {
-  return browserHash.name + ' (' + browserHash.majorVersion + ')';
+  return capitalize(browserHash.browser.split('')) + ' (' + browserHash.browser_version.split('.').shift() + ')';
 }
 
 function browserClassName(browserString) {
@@ -403,6 +411,10 @@ function fullBrowserNameFromSpecific(specificString) {
   for (var i = 0, ii = numberString.length; i < ii; i += 1) {
     specificString.pop();
   }
+  return capitalize(specificString) + ' (' + numberString + ')';
+}
+
+function capitalize(specificString) {
   var first = specificString.shift().toUpperCase();
-  return first + specificString.join('') + ' (' + numberString + ')';
+  return first + specificString.join('');
 }

@@ -1,6 +1,9 @@
 /** @jsx React.DOM */
+
+// TODO: !!! Separate OS X/Windows test charts? Or distinguish?
+// TODO: !!! Handle Opera.
 var TestChart = React.createClass({displayName: 'TestChart',
-  hashMatch: /^#(chrome\d+|firefox\d+)(chrome\d+|firefox\d+)$/,
+  hashMatch: /^#(chrome\d+|firefox\d+|opera\d+)(chrome\d+|firefox\d+|opera\d+)$/,
   getInitialState: function() {
     return {
       results: [],
@@ -40,11 +43,11 @@ var TestChart = React.createClass({displayName: 'TestChart',
     }
 
     data.map(function(result) {
-      var hostName = browserName(result.host.browser);
+      var hostName = browserName(result.host.setting);
       hostBrowsers[hostName] = 1;
       result.hostBrowser = hostName;
 
-      var clientName = browserName(result.client.browser);
+      var clientName = browserName(result.client.setting);
       clientBrowsers[clientName] = 1;
       result.clientBrowser = clientName;
 
@@ -53,11 +56,17 @@ var TestChart = React.createClass({displayName: 'TestChart',
     });
 
     function browserSort(a, b) {
+      console.log(a, b)
       // For same browser, sort in reverse.
-      if (a.indexOf('Chrome') === b.indexOf('Chrome')) {
+      if (a.indexOf('Chrome') === b.indexOf('Chrome') && a.indexOf('Firefox') === b.indexOf('Firefox')) {
         return b > a ? 1 : -1;
+      } else if (b.indexOf('Chrome') === 0) {
+        return 1;
+      } else if (a.indexOf('Chrome') === 0) {
+        return -1;
       } else {
-        return b.indexOf('Chrome') === 0 ? 1 : -1;
+        // Opera last.
+        return b.indexOf('Firefox') === 0 ? 1 : -1;
       }
     };
 
@@ -255,6 +264,7 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
     // component.
     return (
       React.DOM.div( {className:"advanced"}, 
+        React.DOM.h3(null, "Logs"),
         Logs( {clientLogs:result.client.log, hostLogs:result.host.log} ),
         React.DOM.div( {className:"history"}
         )
@@ -270,13 +280,14 @@ var TestDetails = React.createClass({displayName: 'TestDetails',
     }
     return (
       React.DOM.div( {className:"details"}, 
-        React.DOM.h1(null, "PeerJS ", React.DOM.em(null, "Status")),
+        React.DOM.h1(null, "PeerJS ", React.DOM.em(null, "St",React.DOM.span( {className:"green"}, "a"),"tus")),
         inner
       )
     );
   }
 });
 
+// TODO: hide logline until visible.
 var Logs = React.createClass({displayName: 'Logs',
   formatLogLine: function(type, log) {
     log = log.split(' ');
@@ -319,7 +330,6 @@ var Logs = React.createClass({displayName: 'Logs',
 
     return (
       React.DOM.div( {className:"logs"}, 
-        React.DOM.h3(null, "Logs"),
         mixedLogs
       )
     );
@@ -377,15 +387,14 @@ var Browser = React.createClass({displayName: 'Browser',
 
 
 React.renderComponent(
-  // TODO: <TestChart url='/ajax/status' />,
-  TestChart( {url:"dummy.json"} ),
+  TestChart( {url:"results.json"} ),
   document.getElementById('content')
 );
 
 
 // Helpers
 function browserName(browserHash) {
-  return browserHash.name + ' (' + browserHash.majorVersion + ')';
+  return capitalize(browserHash.browser.split('')) + ' (' + browserHash.browser_version.split('.').shift() + ')';
 }
 
 function browserClassName(browserString) {
@@ -402,6 +411,10 @@ function fullBrowserNameFromSpecific(specificString) {
   for (var i = 0, ii = numberString.length; i < ii; i += 1) {
     specificString.pop();
   }
+  return capitalize(specificString) + ' (' + numberString + ')';
+}
+
+function capitalize(specificString) {
   var first = specificString.shift().toUpperCase();
-  return first + specificString.join('') + ' (' + numberString + ')';
+  return first + specificString.join('');
 }
