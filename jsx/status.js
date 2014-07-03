@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 // TODO: !!! Separate OS X/Windows test charts? Or distinguish?
-// TODO: !!! Handle Opera.
 var TestChart = React.createClass({
   hashMatch: /^#(chrome\d+|firefox\d+|opera\d+)(chrome\d+|firefox\d+|opera\d+)$/,
   getInitialState: function() {
@@ -56,7 +55,6 @@ var TestChart = React.createClass({
     });
 
     function browserSort(a, b) {
-      console.log(a, b)
       // For same browser, sort in reverse.
       if (a.indexOf('Chrome') === b.indexOf('Chrome') && a.indexOf('Firefox') === b.indexOf('Firefox')) {
         return b > a ? 1 : -1;
